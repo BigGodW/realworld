@@ -1,18 +1,22 @@
-const mongoose = require('mongoose')
-const {mongodb} = require('../config/config.defalut')
+const db = require('./mysql')
 
+const User = require('./user')
+const Article = require('./article')
+const Comment = require('./comment')
 
-mongoose.connect(`mongodb://${mongodb.url}:27017/${mongodb.dbname}`, {
-    useNewUrlParser: true, 
-    useUnifiedTopology: true
-});
-const db = mongoose.connection
+User.hasMany(Article)
+Article.belongsTo(User)
 
-db.on('error',err=>{ console.log('数据库连接失败',err)})
-db.once('open',()=>{
-    console.log('数据库连接成功')
-})
+User.hasMany(Comment)
+Comment.belongsTo(User)
+
+Article.hasMany(Comment)
+Comment.belongsTo(Article)
+
+db.sync({alter:true})
 
 module.exports = {
-    User: require('./user')
+  User,
+  Article,
+  Comment
 }

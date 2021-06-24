@@ -1,9 +1,16 @@
-
+const {User} = require('../model')
+const filter = require('../util/filter')
 
 // 用户信息 userInfo
 module.exports.userInfo = async(req,res,next)=>{
     try{
-        res.send('用户信息')
+        const userId = req.params.username
+        console.log(userId)
+        const user =await User.findByPk(Number.parseInt(userId))
+        if(!user){
+            return res.status(404).json({mess:'用户不存在'})
+        }
+        res.status(200).json({...filter(user,['username','email','bio','image'])})
     }catch(err){
         next(err)
     }

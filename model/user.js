@@ -1,34 +1,39 @@
-const mongoose = require('mongoose')
+const db = require('./mysql')
+const {DataTypes} = require('sequelize')
+const md5 = require('md5')
 
-const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true
+
+const User = db.define('user',{
+    username:{
+        type:DataTypes.STRING,
+        allowNull:false
     },
-    email: {
-        type: String,
-        required: true
+    password:{
+        type:DataTypes.STRING,
+        set(value){
+            this.setDataValue('password',md5(value))
+        }
     },
-    password: {
-        type: String,
-        required: true
-    },
+    email:{
+        type: DataTypes.STRING
+    }, 
     bio: { 
-        type: String, 
-        defalut: null
+        type: DataTypes.STRING
      },
     image: { 
-        type: String, 
-        defalut: null
-    },
-    createdAt: { 
-        type: Date, default: 
-        Date.now 
-    },
-    updatedAt: { 
-        type: Date, 
-        default: Date.now 
+        type: DataTypes.STRING
+    }
+
+},{
+    defaultScope: {
+        attributes: {
+            // 排除密码，不返回密码
+            exclude: ['password']
+        }
     }
 })
 
-module.exports = mongoose.model('User',UserSchema)
+
+
+
+module.exports = User

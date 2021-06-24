@@ -5,7 +5,7 @@ const profileCont = require('../controller/profile')
 router.get('/:username',profileCont.userInfo)
 
 // 获取关注用户
-router.get('/:username/follow',profileCont.follow)
+router.post('/:username/follow',profileCont.follow)
 
 // 取消用户关注
 router.delete('/:username/follow',profileCont.followOut)
