@@ -22,13 +22,13 @@ router.put('/:id',auth,articlesVal.update,articlesCont.articleUpate)
 // 删除文章 articleRemove
 router.delete('/:id',auth,articlesCont.articleRemove)
 // 添加评论 commentAdd
-router.post('/:id/comments',articlesCont.comment)
+router.post('/:id/comments',auth,articlesVal.addComment,articlesCont.comment)
 
 // 获取文章所有评论 comments
-router.get('/:id/comments',articlesCont.comments)
+router.get('/:id/comments',auth,articlesCont.comments)
 
 // 删除评论 commentRemove
-router.delete('/:id/comments/:commentId',articlesCont.commentRemove)
+router.delete('/:id/comments/:commentId',auth,articlesCont.commentRemove)
 
 // 文章特别关注 favorite
 router.post('/Lslug/favorite',articlesCont.favorite)

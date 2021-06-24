@@ -1,5 +1,5 @@
 const { Result } = require("express-validator");
-const { Article, User } = require("../model");
+const { Article, User, Comment } = require("../model");
 
 // 获取文章 articles
 module.exports.articles = async (req, res, next) => {
@@ -88,7 +88,19 @@ module.exports.articleRemove = async (req, res, next) => {
 // 添加评论 comment
 module.exports.comment = async (req, res, next) => {
   try {
-    res.send("添加评论");
+    const ID = Number.parseInt(req.params.id)
+    
+    let body = req.body.body
+    console.log(body)
+    const article = await Article.findByPk(ID)
+    const commint = await Comment.create({body})
+    if(!article){
+      return res.send('文章不存在')
+    }
+    await article.addComment(commint)
+    await req.user.addComment(commint)
+    res.send('添加评论成功')
+
   } catch (err) {
     next(err);
   }
@@ -96,7 +108,14 @@ module.exports.comment = async (req, res, next) => {
 // 获取评论 comments
 module.exports.comments = async (req, res, next) => {
   try {
-    res.send("获取评论");
+    const ID = Number.parseInt(req.params.id)
+    const comments = await Comment.findAndCountAll({
+      where:{
+        articleId:ID
+      }
+    })
+    
+    res.send(comments)
   } catch (err) {
     next(err);
   }
